@@ -21,6 +21,8 @@ repositories {
 dependencies {
     implementation(project(":app-domain"))
     implementation(project(":app-service"))
+    implementation(project(":system-integration"))
+
 
     implementation(project(":user-interface:rest-api"))
     implementation(project(":infrastructure:orm-adapter"))

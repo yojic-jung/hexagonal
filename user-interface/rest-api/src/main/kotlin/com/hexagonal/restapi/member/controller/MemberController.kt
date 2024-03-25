@@ -1,4 +1,6 @@
 package com.hexagonal.restapi.member.controller
 
-class MemberController {
+import org.springframework.beans.factory.config.BeanPostProcessor
+
+class MemberController{
 }
