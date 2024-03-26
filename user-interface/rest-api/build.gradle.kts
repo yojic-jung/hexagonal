@@ -23,6 +23,8 @@ repositories {
 dependencies {
     implementation(project(":app-domain"))
     implementation(project(":app-service"))
+    implementation(project(":system-integration"))
+    implementation(project(":infrastructure:orm-adapter"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
