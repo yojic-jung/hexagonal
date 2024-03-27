@@ -19,12 +19,11 @@ class MyCustomDefaultClass : MyCustomInterface {
     }
 }
 
-
 /** Qualifier 테스트 목적 클래스 */
 @Aliases("secondary")
 @UseCase
 class MyCustomSecondaryClass : MyCustomInterface {
     override fun a() {
-        println(1)
+        println(2)
     }
 }

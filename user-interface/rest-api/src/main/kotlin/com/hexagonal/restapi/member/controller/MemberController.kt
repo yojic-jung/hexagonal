@@ -6,14 +6,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class MemberController(
-    private val myCustomInterface: MyCustomInterface
-){
-
+    private val myCustomInterface: MyCustomInterface,
+) {
     @GetMapping("/ab")
-    fun fdlad():String {
+    fun fdlad(): String {
         myCustomInterface.a()
         return "index.html"
     }
-
-
 }
