@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 @SpringBootTest
-class UsecasePostProcessorTest(
+class UseCaseBeanCreationProcessorTest(
     @Autowired @Qualifier("secondary") private val myCustomInterface: MyCustomInterface,
 ) {
     @Autowired
@@ -27,17 +27,6 @@ class UsecasePostProcessorTest(
 
     @Test
     fun checkQualifier() {
-        val beanName = "myCustomSecondaryClass"
-        val beanDefinition = applicationContext.getBeanDefinition(beanName)
-        val qualifiers =
-            beanDefinition.attributeNames()
-                .filter { it.startsWith("qualifier.") }
-                .map { beanDefinition.getAttribute(it).toString() }
-
-        println("Qualifiers for bean '$beanName': $qualifiers")
-    }
-
-    @Test
-    fun `primary 속성 등록 테스트`() {
+        myCustomInterface.a()
     }
 }
