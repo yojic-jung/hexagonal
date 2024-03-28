@@ -27,3 +27,13 @@ class MyCustomSecondaryClass : MyCustomInterface {
         println(2)
     }
 }
+
+@UseCase
+class MySubClass(
+    @Aliases("secondary")
+    private val myCustomInterface: MyCustomInterface
+){
+    fun aaa() {
+        myCustomInterface.a()
+    }
+}

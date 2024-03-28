@@ -1,13 +1,10 @@
 package com.hexagonal.systemintegration.processor
 
-import com.hexagonal.appdomain.annotation.Aliases
-import com.hexagonal.appdomain.annotation.Priority
 import com.hexagonal.appdomain.annotation.UseCase
+import com.hexagonal.systemintegration.manager.BeanDefinitionModifyDelegateManager
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
-import org.springframework.beans.factory.support.AutowireCandidateQualifier
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
@@ -28,14 +25,18 @@ import org.springframework.stereotype.Component
  * https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanFactoryPostProcessor.html
  *
  */
+@Qualifier("useCase")
 @Component
-class UseCaseBeanCreationProcessor : BeanFactoryPostProcessor {
+class UseCaseBeanCreationProcessor(
+    @Qualifier("useCase")
+    private val beanDefModifyDelegateManager: BeanDefinitionModifyDelegateManager,
+) : BeanCreationProcessor {
     companion object {
         private const val USECASE_BASE_PACAKGE = "com.hexagonal.appservice"
     }
 
     @Throws(BeansException::class)
-    override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
+    override fun createAllBeans(beanFactory: ConfigurableListableBeanFactory) {
         // beanDef 등록 레지스트리(beanDef가 등록되면 자동으로 인스턴스화 해준다.)
         val registry = beanFactory as BeanDefinitionRegistry
 
@@ -53,49 +54,11 @@ class UseCaseBeanCreationProcessor : BeanFactoryPostProcessor {
             val beanName = beanClass.simpleName.replaceFirstChar { it.lowercase() }
             val beanDefBuilder = BeanDefinitionBuilder.genericBeanDefinition(beanClass)
 
-            // priority와 aliases를 체크하고 존재한다면 빈 정의 설정
-            checkAndInitPriorityOrAliases(beanClass, beanDefBuilder)
+            // beanDefModifyDelegateManager를 통해 useCase 클래스의 빈 정의 변경
+            beanDefModifyDelegateManager?.delegateProcess(beanClass, beanDefBuilder)
 
             // 빈 등록
             registry.registerBeanDefinition(beanName, beanDefBuilder.beanDefinition)
-        }
-    }
-
-    // priority와 aliases 체크 후 존재하면 빈 정의 설정
-    private fun <T> checkAndInitPriorityOrAliases(
-        beanClass: Class<T>,
-        beanDefBuilder: BeanDefinitionBuilder,
-    ) {
-        // annotation에 따른 beanDef 설저 메서드를 갖는 맵
-        val beanDefModifyMapByAnnot =
-            mapOf(
-                Priority::class to { modifyPrimary(beanDefBuilder) },
-                Aliases::class to { modifyQualifier(beanClass, beanDefBuilder) },
-            )
-
-        // annotation에 따른 beanDef 설정
-        beanDefModifyMapByAnnot.forEach { (annot, modify) ->
-            if (beanClass.isAnnotationPresent(annot.java)) modify()
-        }
-    }
-
-    // primary 속성 설정
-    private fun modifyPrimary(beanDefBuilder: BeanDefinitionBuilder) {
-        beanDefBuilder.setPrimary(true)
-    }
-
-    // qualifier 속성 설정
-    private fun <T> modifyQualifier(
-        beanClass: Class<T>,
-        beanDefBuilder: BeanDefinitionBuilder,
-    ) {
-        val aliasesAnnotation = beanClass.getAnnotation(Aliases::class.java)
-        val aliases = aliasesAnnotation.value.split(",").map { it.trim() }
-        aliases.forEach { alias ->
-            val qualifier = AutowireCandidateQualifier(Qualifier::class.java)
-            qualifier.setAttribute("value", alias)
-
-            beanDefBuilder.beanDefinition.addQualifier(qualifier)
         }
     }
 }
