@@ -6,10 +6,9 @@ import org.springframework.beans.factory.support.AutowireCandidateQualifier
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.stereotype.Component
 
-@Qualifier("useCase")
-@Component
 class UseCaseBeanDefinitionModifyProcessor : BeanDefinitionModifyProcessor {
     override fun modifyPrimary(beanDefinitionBuilder: BeanDefinitionBuilder) {
+        println("primary")
         beanDefinitionBuilder.setPrimary(true)
     }
 
@@ -22,7 +21,7 @@ class UseCaseBeanDefinitionModifyProcessor : BeanDefinitionModifyProcessor {
         aliases.forEach { alias ->
             val qualifier = AutowireCandidateQualifier(Qualifier::class.java)
             qualifier.setAttribute("value", alias)
-
+            println("qualifier")
             beanDefinitionBuilder.beanDefinition.addQualifier(qualifier)
         }
     }

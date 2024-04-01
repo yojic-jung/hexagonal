@@ -20,6 +20,7 @@ class UseCaseConfigTest(
         // given & when
         val useCaseBeans = context.getBeansWithAnnotation(UseCase::class.java)
 
+        for(useCase in useCaseBeans) println(useCase)
         // then
         assertThat(useCaseBeans.size).isGreaterThan(0)
     }

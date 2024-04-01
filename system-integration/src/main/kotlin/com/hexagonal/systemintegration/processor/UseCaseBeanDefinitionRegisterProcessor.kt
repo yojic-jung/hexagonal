@@ -3,13 +3,11 @@ package com.hexagonal.systemintegration.processor
 import com.hexagonal.appdomain.annotation.UseCase
 import com.hexagonal.systemintegration.manager.BeanDefinitionModifyDelegateManager
 import org.springframework.beans.BeansException
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
 import org.springframework.core.type.filter.AnnotationTypeFilter
-import org.springframework.stereotype.Component
 
 /**
  * 빈팩토리 후처리기
@@ -25,12 +23,9 @@ import org.springframework.stereotype.Component
  * https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanFactoryPostProcessor.html
  *
  */
-@Qualifier("useCase")
-@Component
-class UseCaseBeanCreationProcessor(
-    @Qualifier("useCase")
+class UseCaseBeanDefinitionRegisterProcessor(
     private val beanDefModifyDelegateManager: BeanDefinitionModifyDelegateManager,
-) : BeanCreationProcessor {
+) : BeanDefinitionRegisterProcessor {
     companion object {
         private const val USECASE_BASE_PACAKGE = "com.hexagonal.appservice"
     }
@@ -53,9 +48,10 @@ class UseCaseBeanCreationProcessor(
             val beanClass = Class.forName(beanDef.beanClassName)
             val beanName = beanClass.simpleName.replaceFirstChar { it.lowercase() }
             val beanDefBuilder = BeanDefinitionBuilder.genericBeanDefinition(beanClass)
+            println(beanName)
 
             // beanDefModifyDelegateManager를 통해 useCase 클래스의 빈 정의 변경
-            beanDefModifyDelegateManager?.delegateProcess(beanClass, beanDefBuilder)
+            beanDefModifyDelegateManager.delegateProcess(beanClass, beanDefBuilder)
 
             // 빈 등록
             registry.registerBeanDefinition(beanName, beanDefBuilder.beanDefinition)
