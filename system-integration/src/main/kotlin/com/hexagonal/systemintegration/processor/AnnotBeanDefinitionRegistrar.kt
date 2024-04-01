@@ -1,5 +1,6 @@
 package com.hexagonal.systemintegration.processor
 
+import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.BEAN_BASE_PACKAGE
 import com.hexagonal.systemintegration.manager.BeanDefinitionModifyManager
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
@@ -26,29 +27,25 @@ import kotlin.reflect.KClass
 class AnnotBeanDefinitionRegistrar(
     private val beanDefModifyDelegateManager: BeanDefinitionModifyManager,
 ) : BeanDefinitionRegisterProcessor {
-    companion object {
-        private const val USECASE_BASE_PACAKGE = "com.hexagonal.appservice"
-    }
 
     @Throws(BeansException::class)
-    override fun registerFromType(targetAnnot: KClass<out Annotation>, beanFactory: ConfigurableListableBeanFactory) {
+    override fun registerFromType(annotation: KClass<out Annotation>, beanFactory: ConfigurableListableBeanFactory) {
         // beanDef 등록 레지스트리(beanDef가 등록되면 자동으로 인스턴스화 해준다.)
         val registry = beanFactory as BeanDefinitionRegistry
 
         // UseCase annotation filter 등록
         val componentScanner = ClassPathScanningCandidateComponentProvider(false)
-        val useCaseAnnotFilter = AnnotationTypeFilter(targetAnnot.java)
+        val useCaseAnnotFilter = AnnotationTypeFilter(annotation.java)
         componentScanner.addIncludeFilter(useCaseAnnotFilter)
 
         // basePackage에 대하여 빈 후보군 beanDefinition 추출
-        val beanDefOfCandidates = componentScanner.findCandidateComponents(USECASE_BASE_PACAKGE)
+        val beanDefOfCandidates = componentScanner.findCandidateComponents(BEAN_BASE_PACKAGE)
 
         // 빈 후보들에 대하여 빈 정의 설정 및 등록
         for (beanDef in beanDefOfCandidates) {
             val beanClass = Class.forName(beanDef.beanClassName)
             val beanName = beanClass.simpleName.replaceFirstChar { it.lowercase() }
             val beanDefBuilder = BeanDefinitionBuilder.genericBeanDefinition(beanClass)
-            beanDefBuilder.setScope("singleton")
 
             // beanDefModifyDelegateManager를 통해 useCase 클래스의 빈 정의 변경
             beanDefModifyDelegateManager.delegate(beanClass, beanDefBuilder)

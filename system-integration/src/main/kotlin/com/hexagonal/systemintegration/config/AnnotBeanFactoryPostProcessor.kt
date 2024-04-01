@@ -1,7 +1,7 @@
 package com.hexagonal.systemintegration.config
 
-import com.hexagonal.appdomain.annotation.Aliases
-import com.hexagonal.appdomain.annotation.UseCase
+import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.BEAN
+import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.QUALIFIER
 import com.hexagonal.systemintegration.processor.BeanDefinitionRegisterProcessor
 import com.hexagonal.systemintegration.processor.QualifierTypeProcessor
 import com.hexagonal.systemintegration.util.AnnotProcessorFactory
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component
 @Component
 class AnnotBeanFactoryPostProcessor(
     private val beanDefRegistrar: BeanDefinitionRegisterProcessor = AnnotProcessorFactory.getBeanDefinitionRegistrar(),
-    private val qualifierProcessor: QualifierTypeProcessor = AnnotProcessorFactory.getQualifierTypeProcessor()
+    private val qualifierProcessor: QualifierTypeProcessor = AnnotProcessorFactory.getQualifierTypeProcessor(),
 ) : BeanFactoryPostProcessor {
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
         // useCase 어노테이션 붙은 클래스 beanDefinition으로 생성
-        beanDefRegistrar.registerFromType(AnnotConfigHolder.BEAN, beanFactory)
+        beanDefRegistrar.registerFromType(BEAN, beanFactory)
         // qualfier 타입에 Aliases도 추가(의존 주입 가능)
-        qualifierProcessor.addQualifierType(AnnotConfigHolder.QUALIFIER, beanFactory as DefaultListableBeanFactory)
+        qualifierProcessor.addQualifierType(QUALIFIER, beanFactory as DefaultListableBeanFactory)
     }
 }
