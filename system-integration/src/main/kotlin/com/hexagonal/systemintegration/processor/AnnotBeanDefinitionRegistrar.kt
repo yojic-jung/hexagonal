@@ -1,13 +1,13 @@
 package com.hexagonal.systemintegration.processor
 
-import com.hexagonal.appdomain.annotation.UseCase
-import com.hexagonal.systemintegration.manager.BeanDefinitionModifyDelegateManager
+import com.hexagonal.systemintegration.manager.BeanDefinitionModifyManager
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
 import org.springframework.core.type.filter.AnnotationTypeFilter
+import kotlin.reflect.KClass
 
 /**
  * 빈팩토리 후처리기
@@ -23,21 +23,21 @@ import org.springframework.core.type.filter.AnnotationTypeFilter
  * https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanFactoryPostProcessor.html
  *
  */
-class UseCaseBeanDefinitionRegisterProcessor(
-    private val beanDefModifyDelegateManager: BeanDefinitionModifyDelegateManager,
+class AnnotBeanDefinitionRegistrar(
+    private val beanDefModifyDelegateManager: BeanDefinitionModifyManager,
 ) : BeanDefinitionRegisterProcessor {
     companion object {
         private const val USECASE_BASE_PACAKGE = "com.hexagonal.appservice"
     }
 
     @Throws(BeansException::class)
-    override fun createAllBeans(beanFactory: ConfigurableListableBeanFactory) {
+    override fun registerFromType(targetAnnot: KClass<out Annotation>, beanFactory: ConfigurableListableBeanFactory) {
         // beanDef 등록 레지스트리(beanDef가 등록되면 자동으로 인스턴스화 해준다.)
         val registry = beanFactory as BeanDefinitionRegistry
 
         // UseCase annotation filter 등록
         val componentScanner = ClassPathScanningCandidateComponentProvider(false)
-        val useCaseAnnotFilter = AnnotationTypeFilter(UseCase::class.java)
+        val useCaseAnnotFilter = AnnotationTypeFilter(targetAnnot.java)
         componentScanner.addIncludeFilter(useCaseAnnotFilter)
 
         // basePackage에 대하여 빈 후보군 beanDefinition 추출
@@ -48,10 +48,9 @@ class UseCaseBeanDefinitionRegisterProcessor(
             val beanClass = Class.forName(beanDef.beanClassName)
             val beanName = beanClass.simpleName.replaceFirstChar { it.lowercase() }
             val beanDefBuilder = BeanDefinitionBuilder.genericBeanDefinition(beanClass)
-            println(beanName)
 
             // beanDefModifyDelegateManager를 통해 useCase 클래스의 빈 정의 변경
-            beanDefModifyDelegateManager.delegateProcess(beanClass, beanDefBuilder)
+            beanDefModifyDelegateManager.delegate(beanClass, beanDefBuilder)
 
             // 빈 등록
             registry.registerBeanDefinition(beanName, beanDefBuilder.beanDefinition)

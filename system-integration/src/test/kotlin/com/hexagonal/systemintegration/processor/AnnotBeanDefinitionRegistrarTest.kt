@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 @SpringBootTest
-class UseCaseBeanDefinitionRegisterProcessorTest(
+class AnnotBeanDefinitionRegistrarTest(
     @Autowired @Qualifier("secondary") private val myCustomInterface: MyCustomInterface,
 ) {
     @Autowired

@@ -24,5 +24,7 @@ class UseCaseConfigTest(
         // then
         assertThat(useCaseBeans.size).isGreaterThan(0)
     }
+    
+    // 애노테이션 빈과 디폴트 속성 비교 테스트
 
 }
