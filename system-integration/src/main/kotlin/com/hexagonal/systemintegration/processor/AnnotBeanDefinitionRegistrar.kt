@@ -48,6 +48,7 @@ class AnnotBeanDefinitionRegistrar(
             val beanClass = Class.forName(beanDef.beanClassName)
             val beanName = beanClass.simpleName.replaceFirstChar { it.lowercase() }
             val beanDefBuilder = BeanDefinitionBuilder.genericBeanDefinition(beanClass)
+            beanDefBuilder.setScope("singleton")
 
             // beanDefModifyDelegateManager를 통해 useCase 클래스의 빈 정의 변경
             beanDefModifyDelegateManager.delegate(beanClass, beanDefBuilder)
