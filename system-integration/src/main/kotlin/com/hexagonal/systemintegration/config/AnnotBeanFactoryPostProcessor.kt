@@ -20,8 +20,8 @@ class AnnotBeanFactoryPostProcessor(
 ) : BeanFactoryPostProcessor {
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
         // useCase 어노테이션 붙은 클래스 beanDefinition으로 생성
-        beanDefRegistrar.registerFromType(UseCase::class, beanFactory)
+        beanDefRegistrar.registerFromType(AnnotConfigHolder.BEAN, beanFactory)
         // qualfier 타입에 Aliases도 추가(의존 주입 가능)
-        qualifierProcessor.addQualifierType(Aliases::class, beanFactory as DefaultListableBeanFactory)
+        qualifierProcessor.addQualifierType(AnnotConfigHolder.QUALIFIER, beanFactory as DefaultListableBeanFactory)
     }
 }

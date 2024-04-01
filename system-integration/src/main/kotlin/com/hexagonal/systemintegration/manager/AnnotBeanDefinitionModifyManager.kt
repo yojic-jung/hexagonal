@@ -12,22 +12,13 @@ class AnnotBeanDefinitionModifyManager(
     private val beanDefModifyProcessor: BeanDefinitionAttrProcessor
 ) : BeanDefinitionModifyManager {
     override fun <T> delegate(beanClass: Class<T>, beanDefinitionBuilder: BeanDefinitionBuilder) {
-        // annotation에 따른 beanDef 설정 메서드를 갖는 맵
-        val beanDefModifyMapByAnnot =
-            mapOf(
-                AnnotConfigHolder.PRIMARY to {
-                    beanDefModifyProcessor.modifyPrimary(true, beanDefinitionBuilder)
-                },
-                AnnotConfigHolder.QUALIFIER to {
-                    val aliasesAnnotation = beanClass.getAnnotation(AnnotConfigHolder.QUALIFIER.java)
-                    val aliases = aliasesAnnotation.value.split(",").map { it.trim() }
-                    beanDefModifyProcessor.addQualifier(aliases, beanDefinitionBuilder)
-                },
-            )
-
-        // annotation에 따른 beanDef 설정
-        beanDefModifyMapByAnnot.forEach { (annot, modify) ->
-            if (beanClass.isAnnotationPresent(annot.java)) modify()
+        if (beanClass.isAnnotationPresent(AnnotConfigHolder.PRIMARY.java)) {
+            beanDefModifyProcessor.modifyPrimary(true, beanDefinitionBuilder)
+        }else if (beanClass.isAnnotationPresent(AnnotConfigHolder.QUALIFIER.java)) {
+            val aliasesAnnotation = beanClass.getAnnotation(AnnotConfigHolder.QUALIFIER.java)
+            val aliases = aliasesAnnotation.value.split(",").map { it.trim() }
+            beanDefModifyProcessor.addQualifier(aliases, beanDefinitionBuilder)
         }
     }
+
 }
