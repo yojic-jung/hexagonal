@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.support.AutowireCandidateQualifier
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 
-class BeanDefinitionAttrBuildProcessor : BeanDefinitionAttrProcessor {
+class BeanDefinitionAttrModifier : BeanDefinitionAttrProcessor {
     override fun modifyPrimary(isPrimary: Boolean, beanDefinitionBuilder: BeanDefinitionBuilder) {
         beanDefinitionBuilder.setPrimary(isPrimary)
     }

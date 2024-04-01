@@ -5,14 +5,12 @@ import org.springframework.beans.factory.annotation.QualifierAnnotationAutowireC
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import kotlin.reflect.KClass
 
-class AnnotQualifierTypeProcessor : QualifierTypeProcessor {
+class AutowireQualifierTypeResolver : QualifierTypeProcessor {
     // 의존주입시 aliases도 qualifier처럼 사용될 수 있게 Qualifier 타입에 Aliases 타입 추가
     override fun addQualifierType(annotation: KClass<out Annotation>, beanFactory: DefaultListableBeanFactory) {
-        if (beanFactory is DefaultListableBeanFactory) {
-            val qualifierResolver = beanFactory.autowireCandidateResolver
-            if (qualifierResolver is QualifierAnnotationAutowireCandidateResolver) {
-                qualifierResolver.addQualifierType(QUALIFIER.java)
-            }
+        val qualifierResolver = beanFactory.autowireCandidateResolver
+        if (qualifierResolver is QualifierAnnotationAutowireCandidateResolver) {
+            qualifierResolver.addQualifierType(QUALIFIER.java)
         }
     }
 }

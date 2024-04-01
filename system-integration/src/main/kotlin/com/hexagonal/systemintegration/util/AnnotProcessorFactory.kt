@@ -6,13 +6,13 @@ import com.hexagonal.systemintegration.processor.*
 class AnnotProcessorFactory {
     companion object {
         fun getBeanDefinitionRegistrar() : BeanDefinitionRegisterProcessor {
-            val beanDefinitionModifyProcessor = BeanDefinitionAttrBuildProcessor()
+            val beanDefinitionModifyProcessor = BeanDefinitionAttrModifier()
             val beanDefinitionModifyByAnnotManager = AnnotBeanDefinitionModifyManager(beanDefinitionModifyProcessor)
             return AnnotBeanDefinitionRegistrar(beanDefinitionModifyByAnnotManager)
         }
 
         fun getQualifierTypeProcessor() : QualifierTypeProcessor {
-            return AnnotQualifierTypeProcessor()
+            return AutowireQualifierTypeResolver()
         }
     }
 

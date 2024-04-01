@@ -9,13 +9,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Controller
 
 @Controller
-class TmpController {
-
-}
+class TmpController
 
 @SpringBootTest
 class AnnotBeanDefinitionRegistrarTest(
-    @Autowired @Qualifier("secondary") private val myCustomInterface: MyCustomInterface,
+    @Autowired
+    @Qualifier("secondary")
+    private val myCustomInterface: MyCustomInterface,
 ) {
     @Autowired
     lateinit var applicationContext: AnnotationConfigApplicationContext
