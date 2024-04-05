@@ -4,5 +4,5 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import kotlin.reflect.KClass
 
 interface QualifierTypeProcessor {
-    fun addQualifierType(annotation: KClass<out Annotation>, beanFactory: DefaultListableBeanFactory)
+    fun add(annotation: KClass<out Annotation>, beanFactory: DefaultListableBeanFactory)
 }

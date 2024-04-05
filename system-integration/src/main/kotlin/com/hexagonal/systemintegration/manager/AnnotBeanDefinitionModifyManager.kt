@@ -2,8 +2,8 @@ package com.hexagonal.systemintegration.manager
 
 import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder
 import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.BEAN_SCOPE
-import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.PRIMARY
-import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.QUALIFIER
+import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.CUSTOM_PRIMARY_ANNOTATION
+import com.hexagonal.systemintegration.config.AnnotBeanConfigHolder.Companion.CUSTOM_QUALIFIER_ANNOTATION
 import com.hexagonal.systemintegration.processor.BeanDefinitionAttrProcessor
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 
@@ -19,11 +19,11 @@ class AnnotBeanDefinitionModifyManager(
         beanDefinitionBuilder.setScope(BEAN_SCOPE)
 
         // primary 설정
-        if (beanClass.isAnnotationPresent(PRIMARY.java)) {
+        if (beanClass.isAnnotationPresent(CUSTOM_PRIMARY_ANNOTATION.java)) {
             beanDefModifyProcessor.modifyPrimary(true, beanDefinitionBuilder)
         } // qualifier 설정
-        else if (beanClass.isAnnotationPresent(QUALIFIER.java)) {
-            val aliasesAnnotation = beanClass.getAnnotation(AnnotBeanConfigHolder.QUALIFIER.java)
+        else if (beanClass.isAnnotationPresent(CUSTOM_QUALIFIER_ANNOTATION.java)) {
+            val aliasesAnnotation = beanClass.getAnnotation(CUSTOM_QUALIFIER_ANNOTATION.java)
             val aliases = aliasesAnnotation.value.split(",").map { it.trim() }
             beanDefModifyProcessor.addQualifier(aliases, beanDefinitionBuilder)
         }

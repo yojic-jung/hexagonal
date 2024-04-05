@@ -6,10 +6,11 @@ import com.hexagonal.appdomain.annotation.UseCase
 
 class AnnotBeanConfigHolder {
     companion object {
-        const val BEAN_BASE_PACKAGE = "com.hexagonal.appservice"
+        val CUSTOM_BEAN_ANNOTATION = UseCase::class
+        const val BASE_PACKAGES = "com.hexagonal.appservice" // 컴마(,) 로 구분하여 복수개 패키지 경로 설정 가능
         const val BEAN_SCOPE = "singleton"
-        val BEAN = UseCase::class
-        val PRIMARY = Priority::class
-        val QUALIFIER = Aliases::class
+
+        val CUSTOM_PRIMARY_ANNOTATION = Priority::class
+        val CUSTOM_QUALIFIER_ANNOTATION = Aliases::class
     }
 }
