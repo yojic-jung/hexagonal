@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     id("org.springframework.boot") version "3.2.3"
@@ -19,16 +21,14 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":app-domain"))
+    // todo 제거 가능??
     implementation(project(":app-service"))
+    implementation(project(":app-domain"))
+    implementation(project(":modules:a"))
 
-
-    implementation(project(":user-interface:rest-api"))
-    implementation(project(":infrastructure:orm-adapter"))
-
-    implementation("org.springframework.boot:spring-boot-starter-web")
-
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
@@ -41,4 +41,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named<BootJar>("bootJar") {
+    enabled = false
+}
+
+tasks.named<BootRun>("bootRun") {
+    enabled = false
 }

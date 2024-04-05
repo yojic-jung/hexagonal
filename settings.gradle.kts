@@ -12,6 +12,6 @@ include(":bootstrap")
 
 include(":user-interface:rest-api")
 include(":infrastructure:orm-adapter")
-include(":system-integration")
 
 include("modules")
+include("modules:system-construction-di")
